@@ -1,5 +1,8 @@
+# TAG := $(shell date +v%Y%m%d)
+# IMG = tensorflow-examples/mnist_cnn_gpu
+PROJECT_ID=$(shell gcloud config get-value project)
 TAG := $(shell date +v%Y%m%d)
-IMG = tensorflow-examples/mnist_cnn_gpu
+IMG = us.gcr.io/${PROJECT_ID}/tensorflow-examples/mnist_cnn_gpu
 
 all: run
 
@@ -15,6 +18,11 @@ run:
 	docker run ${DOCKER_BUILD_OPTS} -it $(IMG):latest . 
 	@echo Run $(IMG):latest
 
+push: build
+	gcloud docker -- push $(IMG):$(TAG)
+	@echo Pushed $(IMG) with  :$(TAG) tags
+
+
 
 # Build but don't attach the latest tag. This allows manual testing/inspection of the image
-# first.
+# first. 
